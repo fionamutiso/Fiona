@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAKENA AND THE FRIENDS SCHOOL STUDENT MANAGEMENT SYSTEM</title>
+    <style>
+        /* CSS for basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav button {
+            margin: 0 10px;
+            padding: 10px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        nav button:hover {
+            background-color: #218838;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"], input[type="tel"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        td button {
+            background-color: #dc3545;
+        }
+
+        td button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <h1>MAKENA AND THE FRIENDS SCHOOL STUDENT MANAGEMENT SYSTEM</h1>
+        <nav>
+            <button onclick="showSection('addStudent')">Add Student</button>
+            <button onclick="showSection('studentList')">Student List</button>
+            <button onclick="showSection('updateStudent')">Update Student</button>
+            <!-- New button for Student Attendance -->
+            <button onclick="openAttendancePage()">Student Attendance</button>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Add Student Section -->
+        <section id="addStudent" class="section">
+            <h2>Add New Student</h2>
+            <form id="addStudentForm">
+                <label for="studentName">Name:</label>
+                <input type="text" id="studentName" required>
+
+                <label for="studentId">Student ID:</label>
+                <input type="text" id="studentId" required>
+
+                <label for="class">Class:</label>
+                <input type="text" id="class" required>
+
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" required>
+
+                <label for="parentContact">Parent Contact:</label>
+                <input type="tel" id="parentContact" required>
+
+                <label for="examGrades">Exam Grades:</label>
+                <!-- Removed placeholder text -->
+                <input type="text" id="examGrades" required>
+
+                <button type="button" onclick="addStudent()">Add Student</button>
+            </form>
+        </section>
+
+        <!-- Student List Section -->
+        <section id="studentList" class="section">
+            <h2>Student List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Class</th>
+                        <th>DOB</th>
+                        <th>Parent Contact</th>
+                        <th>Exam Grades</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <!-- Data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Update Student Section -->
+        <section id="updateStudent" class="section">
+            <h2>Update Student Information</h2>
+            <form id="updateStudentForm">
+                <label for="updateId">Enter Student ID:</label>
+                <input type="text" id="updateId" required>
+
+                <label for="updateName">Updated Name:</label>
+                <input type="text" id="updateName">
+
+                <label for="updateClass">Updated Class:</label>
+                <input type="text" id="updateClass">
+
+                <label for="updateDob">Updated DOB:</label>
+                <input type="date" id="updateDob">
+
+                <label for="updateParentContact">Updated Parent Contact:</label>
+                <input type="tel" id="updateParentContact">
+
+                <label for="updateExamGrades">Updated Exam Grades:</label>
+                <input type="text" id="updateExamGrades">
+
+                <button type="button" onclick="updateStudent()">Update Student</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        // Sample array to hold student data
+        let students = [];
+
+        // Function to show the relevant section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        // Function to add a student
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const studentId = document.getElementById('studentId').value;
+            const classLevel = document.getElementById('class').value;
+            const dob = document.getElementById('dob').value;
+            const parentContact = document.getElementById('parentContact').value;
+            const examGrades = document.getElementById('examGrades').value;
+
+            const newStudent = { name, studentId, classLevel, dob, parentContact, examGrades };
+            students.push(newStudent);
+
+            displayStudents();
+            document.getElementById('addStudentForm').reset();
+        }
+
+        // Function to display students in the table
+        function displayStudents() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
+
+            students.forEach((student, index) => {
+                const row = `<tr>
+                    <td>${student.name}</td>
+                    <td>${student.studentId}</td>
+                    <td>${student.classLevel}</td>
+                    <td>${student.dob}</td>
+                    <td>${student.parentContact}</td>
+                    <td>${student.examGrades}</td>
+                    <td>
+                        <button onclick="deleteStudent(${index})">Delete</button>
+                    </td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        // Function to update a student's information
+        function updateStudent() {
+            const id = document.getElementById('updateId').value;
+            const updatedName = document.getElementById('updateName').value;
+            const updatedClass = document.getElementById('updateClass').value;
+            const updatedDob = document.getElementById('updateDob').value;
+            const updatedParentContact = document.getElementById('updateParentContact').value;
+            const updatedExamGrades = document.getElementById('updateExamGrades').value;
+
+            const student = students.find(s => s.studentId === id);
+            if (student) {
+                if (updatedName) student.name = updatedName;
+                if (updatedClass) student.classLevel = updatedClass;
+                if (updatedDob) student.dob = updatedDob;
+                if (updatedParentContact) student.parentContact = updatedParentContact;
+                if (updatedExamGrades) student.examGrades = updatedExamGrades;
+
+                displayStudents();
+                document.getElementById('updateStudentForm').reset();
+                alert('Student information updated successfully!');
+            } else {
+                alert('Student ID not found!');
+            }
+        }
+
+        // Function to delete a student
+        function deleteStudent(index) {
+            students.splice(index, 1);
+            displayStudents();
+        }
+
+        // Function to open the attendance page
+        function openAttendancePage() {
+            window.location.href = "file:///C:/Users/USER/Desktop/attedance.HTML";
+        }
+
+        // Initialize the page with Add Student form visible
+        showSection('addStudent');
+    </script>
+</body>
+</html>
